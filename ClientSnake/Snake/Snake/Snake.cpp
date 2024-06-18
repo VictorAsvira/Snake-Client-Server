@@ -160,6 +160,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 case ID_BUTTON2:
                     // Handle Button 2 click
                     clear();
+                    client();
                     windowConnect();
                     break;
 

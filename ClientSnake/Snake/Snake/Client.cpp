@@ -33,7 +33,7 @@ void client() {
     sockaddr_in serverAddr;
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_port = htons(9090); // Port to connect
-    serverAddr.sin_addr.s_addr = inet_addr("192.168.0.31");
+    serverAddr.sin_addr.s_addr = inet_addr("192.168.1.13");
 
     // Connect to server
     if (connect(sock, (SOCKADDR*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) {
