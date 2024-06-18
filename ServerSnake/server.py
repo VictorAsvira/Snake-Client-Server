@@ -1,34 +1,35 @@
 import socket
+import threading
 
-sock = socket.socket()
-
-try:
-    sock.bind(('', 9090))
-    sock.listen(1)
-    print("Server listening on port 9090")
-
+def server_thread():
     while True:
-        conn, addr = sock.accept()
-        print(f"Connection established with {addr}")
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # Create a new socket
+        try:
+            sock.bind(('', 9090))
+            sock.listen(1)
+            print("Server listening on port 9090")
 
-        frame_count = 0
-        while True:
-            data = conn.recv(1024)
-            if not data:
-                print("Connection closed by the client.")
-                break  # Break out of the inner loop if no data received
-            else:
-                print(data.decode())  # Decode and print received data
-        frame_count += 1
+            conn, addr = sock.accept()
+            print(f"Connection established with {addr}")
 
-        if frame_count == 25:
-            print("25 frames received from client.")
-            frame_count = 0  # Reset frame count
-                
+            while True:
+                data = conn.recv(1024)
+                if not data:
+                    print("Connection closed by the client.")
+                    break  # Break out of the inner loop if no data received
+                else:
+                    print(data.decode())  # Decode and print received data
 
-except socket.error as e:
-    print(f"Socket error: {e}")
+        except socket.error as e:
+            print(f"Socket error: {e}")
 
-finally:
-    sock.close()
-    print("Server socket closed.")
+        finally:
+            conn.close()  # Close the client connection
+            sock.close()  # Close the server socket
+            print("Server socket closed.")
+            event.wait(1)  # Wait for 1 second before recreating the socket
+
+# Create and start the server thread
+event = threading.Event()
+server = threading.Thread(target=server_thread)
+server.start()
