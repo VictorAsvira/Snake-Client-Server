@@ -42,6 +42,8 @@ class Player:
     
     live = True
     scor = 3
+    pleyer_number = 0
+    player_key = 0
     
     def __init__(self, forward):
             

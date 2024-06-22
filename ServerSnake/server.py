@@ -1,35 +1,72 @@
 import socket
+import json
 import threading
 
-def server_thread():
-    while True:
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # Create a new socket
-        try:
-            sock.bind(('', 9090))
-            sock.listen(1)
-            print("Server listening on port 9090")
+stock_of_pakets = []
+data_lock = threading.Lock()
 
-            conn, addr = sock.accept()
-            print(f"Connection established with {addr}")
+class Server():
+    
+    def __init__(self, port):
+        self.port = port
+        
+    def server_thread(self):
+        while True:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # Create a new socket
+            try:
+                sock.bind(('', self.port))
+                sock.listen(1)
+                print(f"Server listening on port {self.port}")
 
-            while True:
-                data = conn.recv(1024)
-                if not data:
-                    print("Connection closed by the client.")
-                    break  # Break out of the inner loop if no data received
-                else:
-                    print(data.decode())  # Decode and print received data
+                conn, addr = sock.accept()
+                print(f"Connection established with {addr}")
+                
+                paket = ""
 
-        except socket.error as e:
-            print(f"Socket error: {e}")
+                while True:
+                    data = conn.recv(1024)
+                    if not data:
+                        print("Connection closed by the client.")
+                        break  # Break out of the inner loop if no data received
+                    else:
+                        paket += data.decode()  # Decode and print received data
 
-        finally:
-            conn.close()  # Close the client connection
-            sock.close()  # Close the server socket
-            print("Server socket closed.")
-            event.wait(1)  # Wait for 1 second before recreating the socket
+            except socket.error as e:
+                print(f"Socket error: {e}")
 
-# Create and start the server thread
-event = threading.Event()
-server = threading.Thread(target=server_thread)
-server.start()
+            finally:
+                conn.close()  # Close the client connection
+                sock.close()  # Close the server socket
+                print("Server socket closed.")
+                return paket
+    
+    def start_server(self):
+        
+        global stock_of_pakets
+        
+        def add_to_stock(paket, array):
+            if not paket:
+                print("Received an empty paket, skipping.")
+                return
+            
+            try:
+                #json_data = json.dumps(paket)  # Parse JSON data
+                json_data = json.loads(paket)
+                print(type(json_data))
+                array.append(json_data)
+                print(f"Added to stock: {json_data}")
+            except json.JSONDecodeError as e:
+                print(f"JSON decode error: {e}")
+        
+
+
+        # Create and start the server thread
+        
+
+        while True:
+            paket = self.server_thread()
+            with data_lock:
+                add_to_stock(paket, stock_of_pakets)
+            print("Current stock of packets:", stock_of_pakets)
+            print(type(stock_of_pakets[0]))
+
