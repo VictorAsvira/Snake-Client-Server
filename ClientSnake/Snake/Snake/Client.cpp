@@ -15,7 +15,6 @@ void client() {
     WSADATA wsaData;
     int iResult;
 
-
     // Initialize Winsock
     iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
     if (iResult != 0) {
@@ -33,7 +32,7 @@ void client() {
     sockaddr_in serverAddr;
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_port = htons(9090); // Port to connect
-    serverAddr.sin_addr.s_addr = inet_addr("192.168.1.13");
+    serverAddr.sin_addr.s_addr = inet_addr("192.168.1.13"); // Server IP address
 
     // Connect to server
     if (connect(sock, (SOCKADDR*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) {
@@ -65,5 +64,4 @@ void client() {
 
     closesocket(sock);
     WSACleanup();
-
 }

@@ -1,11 +1,22 @@
-import structurs as strukt
+import socket
+import json
 
-aplle = strukt.Aplle(5,5)
-wall = strukt.Wall(5,5)
-test_player = strukt.Player([1,0])
-test_player.spawn_player(1,1)
+json_data = {
+    "ip": "1234",
+    "key": "0",
+    "name": "example",
+    "direction": "1,0"
+}
 
-wall.event(test_player)
+# Convert dictionary to JSON string
+data = json.dumps(json_data)
 
-print (test_player.live)
+# Create a socket and connect to the server
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.connect(('localhost', 9090))
 
+# Send the JSON data
+sock.sendall(data.encode('utf-8'))
+
+# Close the socket
+sock.close()
