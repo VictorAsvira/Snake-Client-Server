@@ -43,9 +43,32 @@ while data_from_claviatur != "end":
     data_from_claviatur = input("Enter command: ")
     
     if data_from_claviatur.startswith("add"):
-        game_on[f'game{data_from_claviatur}'] = game_add(9090)
-        game_on[f'game{data_from_claviatur}'].start_game()
+        try:
+            _, name_game, port_for_server = data_from_claviatur.split()
+            port_for_server = int(port_for_server)
+            if name_game in game_on:
+                print(f"Game '{name_game}' already exists.")
+            else:
+                game_on[name_game] = game_add(port_for_server)
+                game_on[name_game].start_game()
+                print(f"Game '{name_game}' started on port {port_for_server}.")
+        except ValueError:
+            print("Invalid command format. Use: add <name_game> <port_for_server>")
+        except Exception as e:
+            print(f"Error: {e}")
         
     elif data_from_claviatur.startswith("close"):
-        game_on[f'game{data_from_claviatur}'].close_game()
+        try:
+            _, name_game = data_from_claviatur.split()
+            if name_game in game_on:
+                game_on[name_game].close_game()
+                del game_on[name_game]
+                print(f"Game '{name_game}' closed.")
+            else:
+                print(f"No game found with name '{name_game}'.")
+        except Exception as e:
+            print(f"Error: {e}")
+    
+    elif data_from_claviatur != "end":
+        print("Invalid command. Use 'add <name_game> <port_for_server>' to add a game or 'close <name_game>' to close a game.")
     
