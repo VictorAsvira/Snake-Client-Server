@@ -3,9 +3,12 @@ import server
 import threading
 import time
 
-class game():
+class Game():
     def __init__(self, port):
         self.port = port
+        self.game_running = False
+        self.game_key = 1
+        self.players = {}
         
     def create_server(self):
         self.serv = (server.Server(self.port))
@@ -13,12 +16,14 @@ class game():
         self.run_server.start()
     
     def create_game(self):
-        self.pole = strukt.Pole(10, 10)
-        self.player = strukt.Player([1,0])
+        self.pole = strukt.Pole(25, 25)
+        new_player = strukt.Player([1,0], "example", 0)
+        self.players[new_player.player_name] = new_player
         self.pole.create_pole()
-        self.pole.add_player(self.player)
+        self.pole.add_player(self.players["example"])
 
-        while(self.player.live):
+        self.game_running = True
+        while(self.game_running):
             self.pole.step_trace()
             time.sleep(5)
     
@@ -28,16 +33,53 @@ class game():
         self.run_game.start()
     
     def close_game(self):
-        self.run_server.join()
-        self.run_game.join()
+        self.game_running = False
+        self.serv.end_listning()
+        self.run_game.join(0.1)
+        self.run_server.join(0.1)
         
+        
+def data_decryptor(paket):
+    
+    def finde_game(game_name):
+        try:
+            if game_name in game_on:
+               check_player_in_game(game_on[game_name])
+            else:
+                print(f"No game found with name '{name_game}'.") 
+        except Exception as e:
+            print(f"Error: {e}")
+            
+    def check_player_in_game(game_instance):
+        if paket["name"] in game_instance.players:
+             check_key_of_player(game_instance.players[paket["name"]])
+    
+    def check_key_of_player(player_in_game):
+        if player_in_game.player_key == paket["key"]:
+            instruktion_of_player(player_in_game)
+    
+    def instruktion_of_player(player):
+        player.change_direktion(paket["direction"])
+        
+    finde_game(paket["game_name"])
+    with server.data_lock:
+        del server.stock_of_pakets[0]
+        
+def run_data_dekryptor(array_of_pakets):
+    while True:
+        if len(array_of_pakets) >= 1:
+            data_decryptor(array_of_pakets[0])
+        else:
+            time.sleep(0.5)
 
-
+                
 def game_add(port):
-    return game(port)
+    return Game(port)
     
 game_on = {}
 data_from_claviatur = None
+data_dekryptor_is_run = threading.Thread(target = run_data_dekryptor, args = (server.stock_of_pakets,))
+data_dekryptor_is_run.start()
 
 while data_from_claviatur != "end":
     data_from_claviatur = input("Enter command: ")
@@ -71,4 +113,5 @@ while data_from_claviatur != "end":
     
     elif data_from_claviatur != "end":
         print("Invalid command. Use 'add <name_game> <port_for_server>' to add a game or 'close <name_game>' to close a game.")
-    
+
+data_dekryptor_is_run.join()

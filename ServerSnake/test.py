@@ -1,11 +1,13 @@
 import socket
 import json
 
+
 json_data = {
     "ip": "1234",
-    "key": "0",
+    "key": 0,
     "name": "example",
-    "direction": "1,0"
+    "direction": "right",
+    "game_name": "game"
 }
 
 # Convert dictionary to JSON string

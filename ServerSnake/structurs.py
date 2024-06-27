@@ -42,14 +42,14 @@ class Player:
     
     live = True
     scor = 3
-    pleyer_number = 0
-    player_key = 0
     
-    def __init__(self, forward):
+    def __init__(self, forward, player_name, player_key):
             
         self.body = []
         self.forward = forward
         self.cash = [0,0]
+        self.player_name = player_name
+        self.player_key = player_key
         
     def spawn_player(self, x, y):
         
@@ -93,6 +93,20 @@ class Player:
         else:
             # If the player moves out of bounds, end the game
             self.live = False
+            
+    def change_direktion(self, new_direktion):
+        if new_direktion == "right":
+            self.forward[0] = 1
+            self.forward[1] = 0
+        elif new_direktion == "left":
+            self.forward[0] = -1
+            self.forward[1] = 0
+        elif new_direktion == "up":
+            self.forward[0] = 0
+            self.forward[1] = 1
+        elif new_direktion == "down":
+            self.forward[0] = 0
+            self.forward[1] = -1
 
 class Pole:
     
