@@ -43,14 +43,16 @@ void client() {
     }
 
     // Read the contents of the JSON file
-    std::ifstream jsonFile("example.json");
+    std::ifstream jsonFile("example.json", std::ios::in | std::ios::binary);
     if (!jsonFile.is_open()) {
         std::cerr << "Failed to open JSON file." << std::endl;
         closesocket(sock);
         WSACleanup();
         return; // Return from the function
     }
+    
     std::string jsonData((std::istreambuf_iterator<char>(jsonFile)), std::istreambuf_iterator<char>());
+
     jsonFile.close();
 
     // Send the JSON data over the socket

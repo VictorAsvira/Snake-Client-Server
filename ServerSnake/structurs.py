@@ -95,18 +95,18 @@ class Player:
             self.live = False
             
     def change_direktion(self, new_direktion):
-        if new_direktion == "right":
-            self.forward[0] = 1
-            self.forward[1] = 0
-        elif new_direktion == "left":
-            self.forward[0] = -1
-            self.forward[1] = 0
-        elif new_direktion == "up":
+        if new_direktion == "right" and self.forward[1] != -1:
             self.forward[0] = 0
             self.forward[1] = 1
-        elif new_direktion == "down":
+        elif new_direktion == "left" and self.forward[1] != 1:
             self.forward[0] = 0
             self.forward[1] = -1
+        elif new_direktion == "up" and self.forward[0] != 1:
+            self.forward[0] = -1
+            self.forward[1] = 0
+        elif new_direktion == "down" and self.forward[0] != -1:
+            self.forward[0] = 1
+            self.forward[1] = 0
 
 class Pole:
     

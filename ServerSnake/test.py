@@ -6,7 +6,7 @@ json_data = {
     "ip": "1234",
     "key": 0,
     "name": "example",
-    "direction": "right",
+    "direction": "left",
     "game_name": "game"
 }
 

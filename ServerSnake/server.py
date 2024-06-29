@@ -2,6 +2,7 @@ import socket
 import json
 import threading
 import time
+import re
 
 stock_of_pakets = []
 data_lock = threading.Lock()
@@ -59,11 +60,15 @@ class Server():
                 return
             
             try:
-                #json_data = json.dumps(paket)  # Parse JSON data
-                json_data = json.loads(paket)
-                print(type(json_data))
-                array.append(json_data)
-                print(f"Added to stock: {json_data}")
+                data = paket
+                if type(data) == str:
+                    data = dict(re.findall(r'(\w+):\s*([\w\d]+)', data))
+                    print(type(paket))
+                else:
+                    data = json.loads(paket)
+                print(type(data))
+                array.append(data)
+                print(f"Added to stock: {data}")
             except json.JSONDecodeError as e:
                 print(f"JSON decode error: {e}")
         

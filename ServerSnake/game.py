@@ -17,7 +17,7 @@ class Game():
     
     def create_game(self):
         self.pole = strukt.Pole(25, 25)
-        new_player = strukt.Player([1,0], "example", 0)
+        new_player = strukt.Player([1,0], "example", "0")
         self.players[new_player.player_name] = new_player
         self.pole.create_pole()
         self.pole.add_player(self.players["example"])
